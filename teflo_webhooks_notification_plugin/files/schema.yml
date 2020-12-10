@@ -1,0 +1,19 @@
+# default email notifier schema
+---
+type: map
+allowempty: True
+mapping:
+  message_body:
+    required: False
+    type: str
+  message_template:
+    required: False
+    type: str
+  credential:
+    type: map
+    allowempty: True
+    mapping:
+      gchat_url:
+        type: any
+      slack_url:
+        type: any

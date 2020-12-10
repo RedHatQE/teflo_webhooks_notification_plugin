@@ -1,0 +1,10 @@
+include CHANGES LICENSE AUTHORS README.rst
+recursive-include teflo_webhooks_notification_plugin/files *
+recursive-include teflo_webhooks_notification_plugin/templates *
+exclude setup.cfg
+prune docs/
+prune tests/.cache
+prune .git
+prune .gitignore
+prune .github
+

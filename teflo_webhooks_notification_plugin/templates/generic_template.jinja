@@ -1,0 +1,12 @@
+{
+    "text" :
+        {
+            "header": "Teflo Notification ",
+            "scenario": " {{ scenario.name }} ",
+            "overall status": {% if scenario.overall_status == 0 %}"Passed"{% else %}"Failed"{% endif %},
+            "Tasks": {% if not passed_tasks and not failed_tasks %} "No tasks were executed."{% else %} {% if passed_tasks %}"Passed: {{ passed_tasks }}"{% endif %}{% if failed_tasks %}"Failed: {{ failed_tasks }}"{% endif %}{% endif %}
+
+        }
+}
+
+

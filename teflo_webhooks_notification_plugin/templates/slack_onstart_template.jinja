@@ -1,0 +1,25 @@
+{
+    "blocks": [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "Teflo Notification On_start trigger : Scenario Name : {{ scenario.name }}"
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "*Task Started* : {{ passed_tasks }} "
+                }
+
+            ]
+        }
+
+    ]
+}
