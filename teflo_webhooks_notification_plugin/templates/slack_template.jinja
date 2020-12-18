@@ -103,8 +103,8 @@
             "type": "section",
             "fields":
             [
-                {% if scenario.reports %}
-                    {% for report in scenario.reports %}
+                {% if scenario.get_all_reports() %}
+                    {% for report in scenario.get_all_reports() %}
                         {
                                 "type": "mrkdwn",
                                 "text": """*Report task :* {{ report.name }}"""
