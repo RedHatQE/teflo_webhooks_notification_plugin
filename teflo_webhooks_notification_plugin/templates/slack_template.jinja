@@ -60,8 +60,8 @@
         {
             "type": "section",
             "fields": [
-                {% if scenario.executes %}
-                    {% for execute in scenario.executes %}
+                {% if scenario.get_all_executes() %}
+                    {% for execute in scenario.get_all_executes() %}
                         {
                         "type": "mrkdwn",
                         "text": "*Execute task :* {{ execute.name }} "
