@@ -42,8 +42,8 @@
                     "header": "Execute Task Testrun Results",
                     "widgets": [
 
-                            {% if scenario.executes %}
-                                {% for execute in scenario.executes %}
+                            {% if scenario.get_all_executes() %}
+                                {% for execute in scenario.get_all_executes() %}
                                     {
                                         "keyValue":{
                                         "topLabel": "Task Name : {{ execute.name }} ",
@@ -81,8 +81,8 @@
                     "header": "Report Task Import Urls",
                     "widgets": [
 
-                        {% if scenario.reports %}
-                            {% for report in scenario.reports %}
+                        {% if scenario.get_all_reports() %}
+                            {% for report in scenario.get_all_reports() %}
                                 {% if (report.provider == 'polarion' or report.importer == 'polarion') and (report.import_results) %}
                                     {
                                         "keyValue":{
@@ -99,6 +99,7 @@
                                                         "openLink": {
                                                         "url": "{{ results['testrun-url'] }}"
                                                         }
+
                                                 }
                                             }
 
