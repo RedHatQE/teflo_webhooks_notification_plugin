@@ -114,12 +114,12 @@
 
                         } ,
 
-                        {% if (report.provider == 'polarion' or report.importer == 'polarion') and (report.import_results) %}
+                        {% if (report.provider == 'polarion' or report.importer_plugin_name == 'polarion') and (report.import_results) %}
                              {
                                     "type": "mrkdwn",
                                     "text": """{% for results in report.import_results %}\n> <{{ results['testrun-url'] }} |Polarion_testrun_url_{{ loop.index }}> \n{% endfor %}"""
                              }
-                        {% elif (report.provider == 'reportportal' or report.importer == 'reportportal') and (report.import_results) %}
+                        {% elif (report.provider == 'reportportal' or report.importer_plugin_name == 'reportportal') and (report.import_results) %}
 
                             {
                                     "type": "mrkdwn",
