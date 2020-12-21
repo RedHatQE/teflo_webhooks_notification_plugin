@@ -52,6 +52,7 @@ class WebhooksNotificationPlugin(NotificationPlugin):
         self.onstart_temp = 'templates/generic_template.jinja'
 
     def send_message(self):
+        print(self.body)
         bot_message = eval(self.body)
         self.logger.debug('The loaded message body is: ')
         self.logger.debug(bot_message)

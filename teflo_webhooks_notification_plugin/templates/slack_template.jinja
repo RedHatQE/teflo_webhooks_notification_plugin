@@ -82,11 +82,10 @@
                                     "type": "mrkdwn",
                                     "text": "No test run results generated for this execute task"
                             }
+                        {% endif %}
 
                         {% if not loop.last  %}
                         ,
-                        {% endif %}
-
                         {% endif %}
 
                     {% endfor %}
@@ -134,9 +133,9 @@
                              }
                         {% endif %}
 
-                    {% if not loop.last %}
-                            ,
-                    {% endif %}
+                        {% if not loop.last %}
+                                ,
+                        {% endif %}
 
                     {% endfor %}
 
