@@ -83,7 +83,7 @@
 
                         {% if scenario.get_all_reports() %}
                             {% for report in scenario.get_all_reports() %}
-                                {% if (report.provider == 'polarion' or report.importer == 'polarion') and (report.import_results) %}
+                                {% if (report.provider == 'polarion' or report.importer_plugin_name == 'polarion') and (report.import_results) %}
                                     {
                                         "keyValue":{
                                             "topLabel": "Task Name : {{ report.name }} ",
@@ -108,11 +108,11 @@
                                          ,
                                     {% endif %}
                                     {% endfor %}
-                                {% elif (report.provider == 'reportportal' or report.importer == 'reportportal') and (report.import_results) %}
+                                {% elif (report.provider == 'reportportal' or report.importer_plugin_name == 'reportportal') and (report.import_results) %}
                                     {
                                         "keyValue":{
                                             "topLabel": "Task Name : {{ report.name }} ",
-                                            "content": "Report_Portal_Dashboard_Url",
+                                            "content": "Report_Portal_Dashboard_Url_" ,
                                             "onClick": {
                                                         "openLink": {
                                                         "url": "{{ report.import_results['dashboard_url'] }}"

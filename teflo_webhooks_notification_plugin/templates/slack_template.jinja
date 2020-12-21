@@ -76,14 +76,16 @@
                                            *Skipped Tests:* {{ execute.testrun_results.aggregate_testrun_results.skipped_tests }}"""
 
                             }
-                        {% if not loop.last  %}
-                        ,
-                        {% endif %}
+
                         {% else %}
                             {
                                     "type": "mrkdwn",
                                     "text": "No test run results generated for this execute task"
                             }
+                        {% endif %}
+
+                        {% if not loop.last  %}
+                        ,
                         {% endif %}
 
                     {% endfor %}
@@ -111,12 +113,12 @@
 
                         } ,
 
-                        {% if (report.provider == 'polarion' or report.importer == 'polarion') and (report.import_results) %}
+                        {% if (report.provider == 'polarion' or report.importer_plugin_name == 'polarion') and (report.import_results) %}
                              {
                                     "type": "mrkdwn",
                                     "text": """{% for results in report.import_results %}\n> <{{ results['testrun-url'] }} |Polarion_testrun_url_{{ loop.index }}> \n{% endfor %}"""
                              }
-                        {% elif (report.provider == 'reportportal' or report.importer == 'reportportal') and (report.import_results) %}
+                        {% elif (report.provider == 'reportportal' or report.importer_plugin_name == 'reportportal') and (report.import_results) %}
 
                             {
                                     "type": "mrkdwn",
@@ -131,9 +133,9 @@
                              }
                         {% endif %}
 
-                    {% if not loop.last %}
-                            ,
-                    {% endif %}
+                        {% if not loop.last %}
+                                ,
+                        {% endif %}
 
                     {% endfor %}
 
@@ -145,6 +147,5 @@
                 {% endif %}
             ]
         }
-
     ]
 }
