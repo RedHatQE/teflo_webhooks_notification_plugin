@@ -5,5 +5,5 @@ This plugin is used to send notifications on triggers like on_task, on_start, on
 during and post teflo execution. For more information on how to setup triggers for notification 
 please visit [here](https://teflo.readthedocs.io/en/latest/users/definitions/notifications.html#triggers)
 
-- If you're a user of the plugin please refer to the [user](docs/user.md) documentation.
-- If you're a maintainer/developer please refer to the [development](docs/contribute.md) documentation .
+- If you're a user of the plugin please refer to the [user](https://RedHatQE.github.io/teflo_webhooks_notification_plugin/docs/user.html) documentation.
+- If you're a maintainer/developer please refer to the [development](https://RedHatQE.github.io/teflo_webhooks_notification_plugin/docs/contribute.html) documentation .
