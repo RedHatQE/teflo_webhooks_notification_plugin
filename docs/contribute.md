@@ -1,4 +1,6 @@
-# Webhooks Notification PLugin Development Guide
+# Webhooks Notification Plugin Development Guide
+
+### To return to documentation home page press [here](https://redhatqe.github.io/teflo_webhooks_notification_plugin/index.html).
 
 The plugin team welcomes your contributions to the project. 
 Please use this document as a guide to working on proposed changes to Webhooks Notification Plugin. 
