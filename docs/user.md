@@ -1,5 +1,7 @@
 # User Guide
 
+### To return to documentation home page press [here](https://redhatqe.github.io/teflo_webhooks_notification_plugin/index.html).
+
 ## Installation
 
 ### Before Install
@@ -14,6 +16,7 @@ This plugin is supported only with Python 3
 
 ### Install
 To install the plugin you can use pip. 
+
 ```bash
 $ pip install teflo_webhooks_notification_plugin=<tagged_version>
 ```
@@ -38,7 +41,7 @@ slack_url=https://pqr.com
 Within teflo scenario descriptor file (SDF) you can provide the notification block for webhooks as 
 below:
 
-```yaml
+```bash
 notifications:
   - name: <name>
     notifier: slack-notifier/gchat-notifier
@@ -104,9 +107,9 @@ notifications:
   and [scenario resource](https://teflo.readthedocs.io/en/latest/users/scenario_descriptor.html)
   to get an idea of how to access some of the attributes from Teflo's internal resource objects to create message templates
   
-  ### Example
+### Example
   
-  ```yaml
+```yaml
 notifications:
   - name: msg_template
     notifier: slack-notifier
@@ -114,10 +117,12 @@ notifications:
     on_start: true
     message_template: user_template.txt
 ```
-In the above example, the user_template.txt could use teflo's scenario object as below:
+In the above example, the `user_template.txt` could use teflo's scenario object as below:
 
 To get scenario name and passed/failed tasks
+
 ```json
+{% raw %}
 {
     "blocks": [
         {
@@ -143,14 +148,15 @@ To get scenario name and passed/failed tasks
 
     ]
 }
+{% endraw %}
 ```
 
 OR
 
 To get the execute task information and the testrun results for each execute task
 
-```json
-
+```bash
+{% raw %}
 {
     "blocks": [
         {
@@ -206,6 +212,7 @@ To get the execute task information and the testrun results for each execute tas
         
     ]
 }
+{% endraw %}
 
 ```
 
@@ -213,7 +220,7 @@ To get the execute task information and the testrun results for each execute tas
 
 The plugin currently supports webhooks for gchat and slack applications, but has a way for the user
 to supply a webhook url for their required application to receive notifications, under **webhook_url** key in teflo.cfg
-This will work better if the user then supplies the message_body or message_template which suits the webhook of that 
+This will work better if the user then supplies the `message_body` or `message_template` which suits the webhook of that 
 application. 
 
 If the user template is not provided then teflo uses its generic json template for chat application which may or may
@@ -227,13 +234,14 @@ webhook_url=https://generic_url.com
 
 ```
 
-Below is the example of the generic template Teflo sends when webhook_notifier is used. Here the notification sent
+Below is the example of the generic template Teflo sends when `webhook_notifier` is used. Here the notification sent
 comprises of the scenario name, the passed/failed tasks and the overall status.  Teflo uses teflo's scenario object 
 to get this information
  
-```json
+```bash
+{% raw %}
 {
-    "text" :
+    "text":
         {
             "header": "Teflo Notification ",
             "scenario": " {{ scenario.name }} ",
@@ -244,6 +252,7 @@ to get this information
 
         }
 }
+{% endraw %}
 
 ```
 
@@ -252,8 +261,8 @@ to get this information
 ### Example 1
 
 To use slack-notifier to send notification after provisioning task is completed with
-user defined custom message
-Instead of provision task you can use other tasks (validate/execute/orchestrate/report)
+user defined custom message instead of provision task you can use other tasks (validate/execute/orchestrate/report)
+
 ```yaml
 notifications:
   - name: msg_template
@@ -266,7 +275,8 @@ notifications:
 
 ### Example 2
 
-To use gchat-notifier to send notification with trigger on_start using user defined template.
+To use gchat-notifier to send notification with trigger `on_start` using user defined template.
+
 ```yaml
 notifications:
   - name: msg_template
@@ -274,13 +284,13 @@ notifications:
     credential: webhook
     on_start: true
     message_template: user_template.txt
-```  
+```
 
 
 ### Example 3
 
-To use slack-notifier to send notification without specifiying any message_body or message_template. 
-Here Teflo then sends out a default templated message, when a failure occurs
+To use slack-notifier to send notification without specifiying any `message_body` or `message_template`.
+Here Teflo then sends out a default templated message, when a failure occurs.
 
 ```yaml
 notifications:
@@ -289,18 +299,18 @@ notifications:
     credential: webhook
     on_failure: true
 ```  
-     
-  
+
+
 **Note**
 
 In all the examples above you can use gchat-notifier instead of slack-notifier to send the 
 notifications to gchat and vice versa. The thing that will change is you will need adjust the 
-format for the message that gchat/slack accepts and will have to provide gchat_url/slack_url
-in the credentials:webhook section of teflo.cfg  
+format for the message that gchat/slack accepts and will have to provide `gchat_url/slack_url`
+in the credentials:webhook section of teflo.cfg.
 
 ### Example 4
 
-To use generic webhook-notifier to send notification to chat application other than slack or gchat. 
+To use generic webhook-notifier to send notification to chat application other than slack or gchat.
 
 ```yaml
 notifications:
@@ -314,11 +324,12 @@ notifications:
 ### Example 5
 
 To use generic webhook-notifier to send notification to chat application other than slack or gchat without providing
-the user template. Here teflo will send out its own json template 
+the user template. Here teflo will send out its own json template.
 
 ```yaml
 notifications:
   - name: msg1
     notifier: webhook-notifier
     credential: webhook
-    on_failure: true    
+    on_failure: true
+```
