@@ -37,6 +37,29 @@ slack_url=https://pqr.com
 
 ```
 
+User can provide an username and password if the webhook requires authentication. 
+Webhook plugin supports basic authorization
+
+```ini
+[credentials:webhook]
+webhook_url=https://abc.com
+username=<username>
+password=<password>
+
+```
+
+User can also provide custom message headers for their message, if the webhook supports them.
+These headers have to be provided in a comma separated format with the keys and values as **key=val**
+
+```ini
+[credentials:webhook]
+webhook_url=https://abc.com
+username=<username>
+password=<password>
+message_headers=tenant=TEFLO-DEV,key1=val1
+
+```
+
 ## Notification block under Teflo SDF
 Within teflo scenario descriptor file (SDF) you can provide the notification block for webhooks as 
 below:

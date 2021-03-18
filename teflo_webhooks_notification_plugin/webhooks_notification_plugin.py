@@ -25,6 +25,7 @@
 """
 import os
 import os.path
+import base64
 from json import dumps
 from httplib2 import Http
 from teflo.core import NotificationPlugin
@@ -50,6 +51,40 @@ class WebhooksNotificationPlugin(NotificationPlugin):
         self.url = self.creds_params.get('webhook_url', None)
         self.default_cbn_template = 'templates/generic_template.jinja'
         self.onstart_temp = 'templates/generic_template.jinja'
+        self.username = self.creds_params.get('username', None)
+        self.password = self.creds_params.get('password', None)
+        self.webhook_headers = self.creds_params.get('message_headers', None)
+
+    def get_message_headers(self):
+        """ This method generates the message header that will be used to send message.
+            The method looks for any custom message headers and basic authentication information.
+             By default it will provide the header with 'Content-Type': 'application/json; charset=UTF-8' """
+        msg_headers = {}
+
+        # checking if any custom headers are provided and add them to message header dictionary
+        if self.webhook_headers:
+            if isinstance(self.webhook_headers, str):
+                headers = self.webhook_headers.split(',')
+                for item in headers:
+                    if '=' in item:
+                        key, val = item.split('=', 1)
+                        msg_headers[key] = val
+                    else:
+                        raise TefloNotifierError("The value for message headers need to be in a comma separated string "
+                                                 "with keys and values separated by '=' "
+                                                 "e.g. message_headers=key1=val1,key2=val2")
+            else:
+                raise TefloNotifierError("The value for message headers need to be in a comma separated string "
+                                         "with keys and values separated by '=' "
+                                         "e.g. message_headers=key1=val1,key2=val2")
+
+        # if webhooks have authorization information provided
+        if self.username and self.password:
+            credentials = base64.b64encode("{0}:{1}".format(self.username, self.password).encode('utf-8')).decode()
+            msg_headers.update({'Authorization': "Basic %s" % credentials})
+
+        msg_headers.update({'Content-Type': 'application/json; charset=UTF-8'})
+        return msg_headers
 
     def send_message(self):
         bot_message = eval(self.body)
@@ -57,16 +92,15 @@ class WebhooksNotificationPlugin(NotificationPlugin):
         self.logger.debug(bot_message)
 
         if not isinstance(bot_message, dict):
-            raise TefloNotifierError("There was an issue with the message body format. "
-                                      "It needs to be a dictionary %s " % bot_message)
+            raise TefloNotifierError("There was an issue with the message body format."
+                                     "It needs to be a dictionary %s " % bot_message)
 
-        message_headers = {'Content-Type': 'application/json; charset=UTF-8'}
         http_obj = Http()
         try:
             response = http_obj.request(
                 uri=self.url,
                 method='POST',
-                headers=message_headers,
+                headers=self.get_message_headers(),
                 body=dumps(bot_message)
 
             )
@@ -75,7 +109,7 @@ class WebhooksNotificationPlugin(NotificationPlugin):
             raise TefloNotifierError("Error while communicating to the webhook : %s" % e)
 
         if int(response[0]['status']) != 200:
-            raise TefloNotifierError("Error while creating the webhoook payload : %s" % response)
+            raise TefloNotifierError("Error while creating the webhoook payload : %s" % response[1])
         else:
             self.logger.info("Notification Successful for %s " % self.__plugin_name__)
 
@@ -128,7 +162,7 @@ class SlackNotificationPlugin(WebhooksNotificationPlugin):
 
         super(SlackNotificationPlugin, self).__init__(notification=notification)
 
-        self.url = self.url = self.creds_params.get('slack_url', None)
+        self.url = self.creds_params.get('slack_url', None)
         self.default_cbn_template = 'templates/slack_template.jinja'
         self.onstart_temp = 'templates/slack_onstart_template.jinja'
 
@@ -140,6 +174,6 @@ class GchatNotificationPlugin(WebhooksNotificationPlugin):
 
         super(GchatNotificationPlugin, self).__init__(notification=notification)
 
-        self.url = self.url = self.creds_params.get('gchat_url', None)
+        self.url = self.creds_params.get('gchat_url', None)
         self.default_cbn_template = 'templates/gchat_template.jinja'
         self.onstart_temp = 'templates/gchat_onstart_template.jinja'
