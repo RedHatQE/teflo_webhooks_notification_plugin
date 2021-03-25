@@ -57,7 +57,7 @@ def params():
     params = dict(
         description='description goes here.',
         notifier='webhook-notifier',
-        credential='webhook'
+        credential='webhook_generic'
     )
     return params
 
@@ -99,6 +99,7 @@ def webhook_notification_plugin(notification):
     wb_plugin = WebhooksNotificationPlugin(notification)
     return wb_plugin
 
+
 @pytest.fixture()
 def slack_notification_plugin(scenario_resource, slack_params):
     setattr(scenario_resource, 'passed_tasks', ['provision'])
@@ -109,6 +110,19 @@ def slack_notification_plugin(scenario_resource, slack_params):
     note.scenario = scenario_resource
     sl_plugin = SlackNotificationPlugin(note)
     return sl_plugin
+
+
+@pytest.fixture()
+def gc_notification_plugin(scenario_resource, gchat_params):
+    setattr(scenario_resource, 'passed_tasks', ['provision'])
+    setattr(scenario_resource, 'failed_tasks', [])
+    setattr(scenario_resource, 'overall_status', 0)
+    note = Notification(name='gchat1', parameters=gchat_params, config=getattr(scenario_resource, 'config'))
+    scenario_resource.add_notifications(note)
+    note.scenario = scenario_resource
+    gc_plugin = GchatNotificationPlugin(note)
+    return gc_plugin
+
 
 
 class TestWebhookNotificationPlugin(object):
@@ -135,7 +149,7 @@ class TestWebhookNotificationPlugin(object):
     def test_send_message_response_failure(mock_method2, mock_method1, slack_notification_plugin):
         """To test send message method fails when status is anything other than 200"""
         mock_method1.return_value = str({"text": "hello"})
-        mock_method2.return_value = ({'status':'503'},)
+        mock_method2.return_value = ({'status':'503'}, 'Service Unavailable')
         with pytest.raises(TefloNotifierError):
             slack_notification_plugin.notify()
 
@@ -159,22 +173,39 @@ class TestWebhookNotificationPlugin(object):
         slack_notification_plugin.notify()
         assert slack_notification_plugin.body == str({'text': 'teflo_notification'})
 
+
     @staticmethod
     @mock.patch('httplib2.Http.request')
-    def test_notify_method_with_user_template(mock_method, scenario_resource, gchat_params):
+    def test_notify_method_with_user_template(mock_method, gc_notification_plugin):
         """To test notify method with no body and user template is provided"""
         os.system('cp ../assets/user_temp.jinja /tmp/')
         mock_method.return_value = ({'status': '200'},)
-        setattr(scenario_resource, 'passed_tasks', ['provision'])
-        setattr(scenario_resource, 'failed_tasks', [])
-        setattr(scenario_resource, 'overall_status', 0)
-        note = Notification(name='gchat1', parameters=gchat_params, config=getattr(scenario_resource, 'config'))
-        scenario_resource.add_notifications(note)
-        note.scenario = scenario_resource
-        gc_plugin = GchatNotificationPlugin(note)
-        gc_plugin.notify()
-        assert gc_plugin.body == '{"text": "hello"}'
+        gc_notification_plugin.notify()
+        assert gc_notification_plugin.body == '{"text": "hello"}'
         os.system('rm /tmp/user_temp.jinja')
 
+    @staticmethod
+    def test_with_no_auth_header_no_custom_header(gc_notification_plugin):
+        """To test when no custom headers or username/pass are provided message_headers is created correctly"""
+        op = gc_notification_plugin.get_message_headers()
+        assert isinstance(op, dict)
+        assert 'Authorization' not in op.keys()
+        assert len(op) == 1
 
 
+    @staticmethod
+    def test_with_auth_header_and_custom_header(webhook_notification_plugin):
+        """To test when custom headers or username/pass are provided message_headers is created correctly"""
+        op = webhook_notification_plugin.get_message_headers()
+        assert isinstance(op, dict)
+        assert 'tenant' in op.keys()
+        assert 'Authorization' in op.keys()
+
+    @staticmethod
+    def test_with_incorrect_message_header_format(webhook_notification_plugin):
+        """To test when message_headers is given in the incorrect format in teflo.cfg"""
+        webhook_notification_plugin.webhook_headers = 'tenant'
+        with pytest.raises(TefloNotifierError) as ex:
+            webhook_notification_plugin.get_message_headers()
+        assert "The value for message headers need to be in a comma separated string with " \
+               "keys and values separated by '=' e.g. message_headers=key1=val1,key2=val2" in ex.value.args
