@@ -27,5 +27,5 @@ from .webhooks_notification_plugin import WebhooksNotificationPlugin
 from .webhooks_notification_plugin import GchatNotificationPlugin
 from .webhooks_notification_plugin import SlackNotificationPlugin
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 __author__ = 'Red Hat Inc.'
