@@ -34,7 +34,6 @@ from teflo.resources import Notification, Scenario
 from teflo.exceptions import TefloNotifierError
 from teflo.utils.config import Config
 
-
 @pytest.fixture()
 def config():
     config_file = '../assets/teflo.cfg'
@@ -172,7 +171,6 @@ class TestWebhookNotificationPlugin(object):
         mock_method2.return_value = ({'status':'200'},)
         slack_notification_plugin.notify()
         assert slack_notification_plugin.body == str({'text': 'teflo_notification'})
-
 
     @staticmethod
     @mock.patch('httplib2.Http.request')
