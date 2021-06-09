@@ -60,6 +60,39 @@
         {
             "type": "section",
             "fields": [
+                {% if scenario.get_all_assets() %}
+                    {% for asset in scenario.get_all_assets() %}
+                        {
+                        "type": "mrkdwn",
+                        "text": "*Asset name :* {{ asset.name }} "
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": """*IP_Address*: {{ asset.ip_address }} {% if asset.ip_address is defined %} {% else %} No ip_address set {% endif %}
+                                       *Hostname*: {{ asset.hostname }} {% if asset.hostname is defined %} {% else %} No hostname set {% endif %}"""
+
+                        }
+
+                        {% if not loop.last  %}
+                        ,
+                        {% endif %}
+
+                    {% endfor %}
+
+                {% else %}
+                {
+                    "type": "mrkdwn",
+                    "text": "*Provision task:* No Assets were provisioned"
+                }
+                {% endif %}
+            ]
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "fields": [
                 {% if scenario.get_all_executes() %}
                     {% for execute in scenario.get_all_executes() %}
                         {

@@ -38,6 +38,34 @@
                           {% endif %}
                       ]
                 },
+                {                                                               
+                      "header": "Assets Section",
+                      "widgets": [
+
+                          {% if scenario.get_all_assets() %}
+                              {% for asset in scenario.get_all_assets() %}
+                                  {
+                                        "keyValue":{
+                                        "topLabel": "Asset Name: {{ asset.name }} ",
+                                            "contentMultiline": True,
+                                            "content" :"""IP_Address: {{ asset.ip_address }} {% if asset.ip_address is defined %} {% else %} No ip_address set {% endif %}
+                                                         \nHostname: {{ asset.hostname }} {% if asset.hostname is defined %} {% else %} No hostname set {% endif %}"""
+                                        }
+                                  }
+                              {% if not loop.last %}
+                                  ,
+                              {% endif %}
+                              {% endfor %}
+                          {% else %}
+                             {
+                                "keyValue" : {
+                                "topLabel": "Assets Details",
+                                "content": "No Assets set"
+                                 }
+                             }
+                          {% endif %}
+                      ]                                                         
+                }, 
                 {
                     "header": "Execute Task Testrun Results",
                     "widgets": [
