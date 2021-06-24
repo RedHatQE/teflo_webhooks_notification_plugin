@@ -1,3 +1,9 @@
+# Version 1.1.1 (2021-06-24)
+
+## Enhancements
+*  Modified generic templates for gchat/slack to add asset information
+
+
 # Version 1.1.0 (2021-03-26)
 
 ## Enhancements
