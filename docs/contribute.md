@@ -1,6 +1,18 @@
-# Webhooks Notification Plugin Development Guide
+---                                                                             
+layout: default                                                                 
+title: Development Guide
+nav_order: 3
+---                                                                             
+                                                                                
+# Development Guide                                                                    
+{: .no_toc }                                                                    
+                                                                                
+## Table of contents                                                            
+{: .no_toc .text-delta }                                                        
+                                                                                
+1. TOC                                                                          
+{:toc}    
 
-### To return to documentation home page press [here](https://redhatqe.github.io/teflo_webhooks_notification_plugin/index.html).
 
 The plugin team welcomes your contributions to the project. 
 Please use this document as a guide to working on proposed changes to Webhooks Notification Plugin. 
