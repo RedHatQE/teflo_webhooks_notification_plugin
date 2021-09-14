@@ -42,8 +42,8 @@
                       "header": "Assets Section",
                       "widgets": [
 
-                          {% if scenario.get_all_assets() %}
-                              {% for asset in scenario.get_all_assets() %}
+                          {% if scenario.get_assets() %}
+                              {% for asset in scenario.get_assets() %}
                                   {
                                         "keyValue":{
                                         "topLabel": "Asset Name: {{ asset.name }} ",
@@ -70,8 +70,8 @@
                     "header": "Execute Task Testrun Results",
                     "widgets": [
 
-                            {% if scenario.get_all_executes() %}
-                                {% for execute in scenario.get_all_executes() %}
+                            {% if scenario.get_executes() %}
+                                {% for execute in scenario.get_executes() %}
                                     {
                                         "keyValue":{
                                         "topLabel": "Task Name : {{ execute.name }} ",
@@ -109,8 +109,8 @@
                     "header": "Report Task Import Urls",
                     "widgets": [
 
-                        {% if scenario.get_all_reports() %}
-                            {% for report in scenario.get_all_reports() %}
+                        {% if scenario.get_reports() %}
+                            {% for report in scenario.get_reports() %}
                                 {% if (report.provider == 'polarion' or report.importer_plugin_name == 'polarion') and (report.import_results) %}
                                     {
                                         "keyValue":{

@@ -60,8 +60,8 @@
         {
             "type": "section",
             "fields": [
-                {% if scenario.get_all_assets() %}
-                    {% for asset in scenario.get_all_assets() %}
+                {% if scenario.get_assets() %}
+                    {% for asset in scenario.get_assets() %}
                         {
                         "type": "mrkdwn",
                         "text": "*Asset name :* {{ asset.name }} "
@@ -93,8 +93,8 @@
         {
             "type": "section",
             "fields": [
-                {% if scenario.get_all_executes() %}
-                    {% for execute in scenario.get_all_executes() %}
+                {% if scenario.get_executes() %}
+                    {% for execute in scenario.get_executes() %}
                         {
                         "type": "mrkdwn",
                         "text": "*Execute task :* {{ execute.name }} "
@@ -138,8 +138,8 @@
             "type": "section",
             "fields":
             [
-                {% if scenario.get_all_reports() %}
-                    {% for report in scenario.get_all_reports() %}
+                {% if scenario.get_reports() %}
+                    {% for report in scenario.get_reports() %}
                         {
                                 "type": "mrkdwn",
                                 "text": """*Report task :* {{ report.name }}"""
