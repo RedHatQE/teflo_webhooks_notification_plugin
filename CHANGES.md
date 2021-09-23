@@ -1,3 +1,10 @@
+# Version 2.0.0 (2021-09-23)
+
+## Enhancements
+*  Modified generic templates for gchat/slack to support changes made in Teflo 2.0
+   These templates will not work with teflo version lower than 2.0
+
+
 # Version 1.1.1 (2021-06-24)
 
 ## Enhancements
