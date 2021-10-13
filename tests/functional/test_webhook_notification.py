@@ -33,6 +33,8 @@ from teflo_webhooks_notification_plugin.webhooks_notification_plugin import Webh
 from teflo.resources import Notification, Scenario
 from teflo.exceptions import TefloNotifierError
 from teflo.utils.config import Config
+from teflo.utils.scenario_graph import ScenarioGraph
+from termcolor import colored
 
 @pytest.fixture()
 def config():
@@ -49,6 +51,11 @@ def scenario_resource(config):
     setattr(sc, 'failed_tasks', [])
     setattr(sc, 'overall_status', 0)
     return sc
+
+@pytest.fixture()
+def scenario_graph(scenario_resource):
+    sg = ScenarioGraph(root_scenario=scenario_resource, scenario_vars= {'username': 'teflo_user'})
+    return sg
 
 @pytest.fixture()
 def params():
@@ -84,11 +91,12 @@ def gchat_params():
     return params
 
 @pytest.fixture()
-def notification(params, config, scenario_resource):
+def notification(params, config, scenario_resource, scenario_graph):
     note = Notification(name='notify1', parameters=params,  config=getattr(scenario_resource, 'config'))
     setattr(scenario_resource, 'passed_tasks', ['provision'])
     setattr(scenario_resource, 'failed_tasks', [])
     setattr(scenario_resource, 'overall_status', 0)
+    setattr(scenario_resource, 'scenario_graph', scenario_graph)
     scenario_resource.add_notifications(note)
     note.scenario = scenario_resource
     return note
@@ -100,10 +108,11 @@ def webhook_notification_plugin(notification):
 
 
 @pytest.fixture()
-def slack_notification_plugin(scenario_resource, slack_params):
+def slack_notification_plugin(scenario_resource, slack_params, scenario_graph):
     setattr(scenario_resource, 'passed_tasks', ['provision'])
     setattr(scenario_resource, 'failed_tasks', [])
     setattr(scenario_resource, 'overall_status', 0)
+    setattr(scenario_resource, 'scenario_graph', scenario_graph)
     note = Notification(name='slack1', parameters=slack_params, config=getattr(scenario_resource, 'config'))
     scenario_resource.add_notifications(note)
     note.scenario = scenario_resource
@@ -112,10 +121,11 @@ def slack_notification_plugin(scenario_resource, slack_params):
 
 
 @pytest.fixture()
-def gc_notification_plugin(scenario_resource, gchat_params):
+def gc_notification_plugin(scenario_resource, gchat_params, scenario_graph):
     setattr(scenario_resource, 'passed_tasks', ['provision'])
     setattr(scenario_resource, 'failed_tasks', [])
     setattr(scenario_resource, 'overall_status', 0)
+    setattr(scenario_resource, 'scenario_graph', scenario_graph)
     note = Notification(name='gchat1', parameters=gchat_params, config=getattr(scenario_resource, 'config'))
     scenario_resource.add_notifications(note)
     note.scenario = scenario_resource
@@ -123,18 +133,21 @@ def gc_notification_plugin(scenario_resource, gchat_params):
     return gc_plugin
 
 
-
 class TestWebhookNotificationPlugin(object):
 
     @staticmethod
-    def test_slack_plugin(scenario_resource, slack_params):
+    def test_slack_plugin(scenario_resource, slack_params, scenario_graph):
+        setattr(scenario_resource, 'scenario_graph', scenario_graph)
         note = Notification(name='slack1', parameters=slack_params, config=getattr(scenario_resource, 'config'))
+        note.scenario = scenario_resource
         sl = SlackNotificationPlugin(note)
         assert isinstance(sl, WebhooksNotificationPlugin)
 
     @staticmethod
-    def test_gchat_plugin(scenario_resource, gchat_params):
+    def test_gchat_plugin(scenario_resource, gchat_params, scenario_graph):
+        setattr(scenario_resource, 'scenario_graph', scenario_graph)
         note = Notification(name='gchat1', parameters=gchat_params, config=getattr(scenario_resource, 'config'))
+        note.scenario = scenario_resource
         gc = GchatNotificationPlugin(note)
         assert isinstance(gc, WebhooksNotificationPlugin)
 
@@ -177,9 +190,10 @@ class TestWebhookNotificationPlugin(object):
     def test_notify_method_with_user_template(mock_method, gc_notification_plugin):
         """To test notify method with no body and user template is provided"""
         os.system('cp ../assets/user_temp.jinja /tmp/')
+
         mock_method.return_value = ({'status': '200'},)
         gc_notification_plugin.notify()
-        assert gc_notification_plugin.body == '{"text": "hello"}'
+        assert gc_notification_plugin.body == '{"text": "hello teflo_user "}'
         os.system('rm /tmp/user_temp.jinja')
 
     @staticmethod
@@ -205,5 +219,6 @@ class TestWebhookNotificationPlugin(object):
         webhook_notification_plugin.webhook_headers = 'tenant'
         with pytest.raises(TefloNotifierError) as ex:
             webhook_notification_plugin.get_message_headers()
-        assert "The value for message headers need to be in a comma separated string with " \
-               "keys and values separated by '=' e.g. message_headers=key1=val1,key2=val2" in ex.value.args
+        assert colored("The value for message headers need to be in a comma separated string with "
+                       "keys and values separated by '=' e.g. message_headers=key1=val1,key2=val2", "red") \
+               in ex.value.args
