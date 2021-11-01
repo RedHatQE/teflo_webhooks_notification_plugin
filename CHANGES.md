@@ -1,3 +1,9 @@
+# Version 2.0.1 (2021-11-01)
+
+## Enhancements
+*  Updated plugin to be able to use scenario_vars(variables used by teflo scenario and the environmental variables) in templates
+
+
 # Version 2.0.0 (2021-09-23)
 
 ## Enhancements

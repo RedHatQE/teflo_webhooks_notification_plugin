@@ -43,6 +43,7 @@ class WebhooksNotificationPlugin(NotificationPlugin):
         super(WebhooksNotificationPlugin, self).__init__(notification=notification)
 
         self.scenario = getattr(self.notification, 'scenario')
+        self.scenario_graph = getattr(self.scenario, 'scenario_graph')
         self.config_params = self.get_config_params()
         self.creds_params = self.get_credential_params()
         self.body = getattr(self.notification, 'message_body', '')
@@ -131,11 +132,9 @@ class WebhooksNotificationPlugin(NotificationPlugin):
                                             generate_default_template_vars(self.scenario, self.notification))
         elif not self.body and self.body_tmpl:
             self.logger.info('Using user provided webhook template')
-            var_dict = dict()
-            # Updating the the var_dict with scenario object to be used if needed by the user template
-            var_dict.update(scenario=generate_default_template_vars(self.scenario, self.notification).get('scenario'))
-            # Updating the the var_dict with environmental variables be used in the user template
-            var_dict.update(os.environ)
+            # this var_dict consists of scenario object and scenario_vars which are all the variables
+            # used by teflo along with environment variables
+            var_dict = generate_default_template_vars(self.scenario, self.notification)
             self.body = template_render(os.path.abspath(os.path.join(getattr(self.notification, 'workspace'),
                                         self.body_tmpl)), var_dict)
         elif self.body and not self.body_tmpl:
